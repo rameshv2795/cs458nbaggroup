@@ -75,8 +75,7 @@ function getName() {
 <?php
 if(isset($_POST['formSubmit']))
 {
-  $val = $_POST["name"];
-  print $val;
+  $FullName = $_POST["name"];
 }
 
 
