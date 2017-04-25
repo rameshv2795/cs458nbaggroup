@@ -3,6 +3,8 @@
 <head>
 <link href="css/extension-page-style.css" rel="stylesheet" type="text/css"  />
 <script type="text/javascript" src="http://static.fusioncharts.com/code/latest/fusioncharts.js"></script>
+<script src="http://static.fusioncharts.com/code/latest/fusioncharts.charts.js"></script>
+<script src="http://static.fusioncharts.com/code/latest/themes/fusioncharts.theme.zune.js"></script>
 <style>
 
 .code-block-holder pre {
@@ -59,6 +61,21 @@
 // Including the wrapper file in the page
 include("fusioncharts.php");
 
+$hostdb = "classmysql:3306";  // MySQl host
+$userdb = "cs340_rameshv";  // MySQL username
+$passdb = "6238";  // MySQL password
+$namedb = "cs340_rameshv";  // MySQL database name
+
+// Establish a connection to the database
+$dbhandle = new mysqli($hostdb, $userdb, $passdb, $namedb);
+
+/*Render an error message, to avoid abrupt failure, if the database connection parameters are incorrect */
+if ($dbhandle->connect_error) {
+  exit("There was an error with your connection: ".$dbhandle->connect_error);
+}
+$strQuery = "SELECT DISTINCT PPG FROM Stats; ";
+  $result = $dbhandle->query($strQuery) or exit("Error code ({$dbhandle->errno}): {$dbhandle->error}");
+if ($result) {
     // Preparing the object of FusionCharts with needed informations
     /**
     * The parameters of the constructor are as follows
@@ -70,10 +87,65 @@ include("fusioncharts.php");
     * dataFormat  {String}  Type of data used to render the chart. e.g. json, jsonurl, xml, xmlurl
     * dataSource  {String}  Actual data for the chart. e.g. {"chart":{},"data":[{"label":"Jan","value":"420000"}]}
     */
-$columnChart = new FusionCharts("msbar2d", "ex1" , "100%", 400, "chart-1", "json", '{
+
+      $arrData = array(
+        "chart" => array(
+        "caption"=> "Rajon Rondo",
+        "subCaption"=> "Points per game",
+        "captionPadding"=> "15",
+        //"numberPrefix"=> "$",
+        "showvalues"=> "1",
+        "valueFontColor"=> "#ffffff",
+        "placevaluesInside"=> "1",
+        "usePlotGradientColor"=> "0",
+        "legendShadow"=> "0",
+        "showXAxisLine"=> "1",
+        "xAxisLineColor"=> "#999999",
+        "xAxisname"=> "Year",
+        "yAxisName"=> "PPG",
+        "divlineColor"=> "#999999",
+        "divLineIsDashed"=> "1",
+        "showAlternateVGridColor"=> "0",
+        "alignCaptionWithCanvas"=> "0",
+        "legendPadding"=> "15",
+        "showHoverEffect"=> "1",
+        "plotToolText"=> "<div><b>$label</b><br/>PPG : <b>$value</b><br/>Year : <b>$value</b></div>",
+        "theme"=> "fint"
+            )
+          );
+
+          $categoryArray=array();
+          $dataseries1=array();
+
+    while($row = mysqli_fetch_array($result)) {
+      array_push($categoryArray, array(
+        "label" => 'Year'
+        )
+      );
+      array_push($dataseries1, array("value" => $row["PPG"]));
+    }
+
+        $arrData["categories"]=array(array("category"=>$categoryArray));
+        $arrData["dataset"] = array(array("seriesName"=> "PPG", "data"=>$dataseries1));
+
+  $jsonEncodedData = json_encode($arrData);
+
+      // chart object
+      $msChart = new FusionCharts("msbar2d", "chart1" , "50%", "350", "chart-1", "json", $jsonEncodedData);
+
+      // Render the chart
+      $msChart->render();
+
+      // closing db connection
+      $dbhandle->close();
+
+      }
+
+
+/*$columnChart = new FusionCharts("msbar2d", "ex1" , "50%", 400, "chart-1", "json", '{
       "chart": {
-        "caption": "Split of Sales by Product Category",
-        "subCaption": "5 top performing stores  - last month",
+        "caption": "Rajon Rondo",
+        "subCaption": "Points per game",
         "captionPadding": "15",
         "numberPrefix": "$",
         "showvalues": "1",
@@ -83,6 +155,8 @@ $columnChart = new FusionCharts("msbar2d", "ex1" , "100%", 400, "chart-1", "json
         "legendShadow": "0",
         "showXAxisLine": "1",
         "xAxisLineColor": "#999999",
+        "xAxisname": "Year",
+        "yAxisName": "PPG",
         "divlineColor": "#999999",
         "divLineIsDashed": "1",
         "showAlternateVGridColor": "0",
@@ -96,12 +170,6 @@ $columnChart = new FusionCharts("msbar2d", "ex1" , "100%", 400, "chart-1", "json
           "label": "Garden Groove harbour"
         }, {
           "label": "Bakersfield Central"
-        }, {
-          "label": "Los Angeles Topanga"
-        }, {
-          "label": "Compton-Rancho Dom"
-        }, {
-          "label": "Daly City Serramonte"
         }]
       }],
       "dataset": [{
@@ -133,7 +201,7 @@ $columnChart = new FusionCharts("msbar2d", "ex1" , "100%", 400, "chart-1", "json
       }]
     }');
 // Render the chart
-$columnChart->render();
+$columnChart->render();*/
 ?>
 <div id="chart-1"><!-- Fusion Charts will render here--></div>
  
