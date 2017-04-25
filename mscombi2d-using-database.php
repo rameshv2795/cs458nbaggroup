@@ -2,14 +2,14 @@
 
 /* Include the `../src/fusioncharts.php` file that contains functions to embed the charts.*/
 
-include("../src/fusioncharts.php");
+include("fusioncharts.php");
 
 /* The following 4 code lines contains the database connection information. Alternatively, you can move these code lines to a separate file and include the file here. You can also modify this code based on your database connection.   */
 
-$hostdb = "localhost";  // MySQl host
-$userdb = "root";  // MySQL username
-$passdb = "";  // MySQL password
-$namedb = "mscombi2d";  // MySQL database name
+$hostdb = "classmysql:3306";  // MySQl host
+$userdb = "cs340_rameshv";  // MySQL username
+$passdb = "6238";  // MySQL password
+$namedb = "cs340_rameshv";  // MySQL database name
 
 // Establish a connection to the database
 $dbhandle = new mysqli($hostdb, $userdb, $passdb, $namedb);
@@ -33,17 +33,16 @@ if ($dbhandle->connect_error) {
 
         <?php
 
-  $strQuery = "SELECT DISTINCT category, value1, value2, value3 FROM mscombi2ddata; ";
+  $strQuery = "SELECT DISTINCT PPG, APG, RPG FROM Stats; ";
   $result = $dbhandle->query($strQuery) or exit("Error code ({$dbhandle->errno}): {$dbhandle->error}");
   if ($result) {
 
   $arrData = array(
         "chart" => array(
-            "caption"=> "Harry's SuperMart",
-            "subCaption"=> "Sales analysis of last year",
-            "xAxisname"=> "Month",
-            "yAxisName"=> "Revenues (In USD)",
-            "numberPrefix"=> "$",
+            "caption"=> "Rajon Rondo",
+            "subCaption"=> "PPG Stats",
+            "xAxisname"=> "Year",
+            "yAxisName"=> "PPG",
             "legendItemFontColor"=> "#666666",
             "theme"=> "zune"
             )
@@ -58,28 +57,25 @@ if ($dbhandle->connect_error) {
           // pushing category array values
           while($row = mysqli_fetch_array($result)) {
             array_push($categoryArray, array(
-            "label" => $row["category"]
+            "label" => $row["PPG"]
           )
         );
         array_push($dataseries1, array(
-          "value" => $row["value1"]
+          "value" => $row["APG"]
           )
         );
 
         array_push($dataseries2, array(
-          "value" => $row["value2"]
+          "value" => $row["RPG"]
           )
         );
-        array_push($dataseries3, array(
-          "value" => $row["value3"]
-          )
-        );
+
 
       }
 
       $arrData["categories"]=array(array("category"=>$categoryArray));
       // creating dataset object
-      $arrData["dataset"] = array(array("seriesName"=> "Actual Revenue", "data"=>$dataseries1), array("seriesName"=> "Projected Revenue",  "renderAs"=>"line", "data"=>$dataseries2),array("seriesName"=> "Profit",  "renderAs"=>"area", "data"=>$dataseries3));
+      $arrData["dataset"] = array(array("seriesName"=> "Actual PPG", "data"=>$dataseries1));
 
 
       /*JSON Encode the data to retrieve the string containing the JSON representation of the data in the array. */

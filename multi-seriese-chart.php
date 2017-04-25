@@ -1,12 +1,8 @@
-
 <!DOCTYPE html>
 <html>
 <head>
 <link href="css/extension-page-style.css" rel="stylesheet" type="text/css"  />
-
 <script type="text/javascript" src="http://static.fusioncharts.com/code/latest/fusioncharts.js"></script>
-
-
 <style>
 
 .code-block-holder pre {
@@ -56,15 +52,14 @@
 <?php
 
 /**
-* This example describes the single seriese chart preparation using FusionCharts PHP wrapper
+* This example describes the multi seriese chart preparation using FusionCharts PHP wrapper
 */
 
 
 // Including the wrapper file in the page
-include("../src/fusioncharts.php");
+include("fusioncharts.php");
 
-
-	// Preparing the object of FusionCharts with needed informations
+    // Preparing the object of FusionCharts with needed informations
     /**
     * The parameters of the constructor are as follows
     * chartType   {String}  The type of chart that you intend to plot. e.g. Column3D, Column2D, Pie2D etc.
@@ -75,30 +70,66 @@ include("../src/fusioncharts.php");
     * dataFormat  {String}  Type of data used to render the chart. e.g. json, jsonurl, xml, xmlurl
     * dataSource  {String}  Actual data for the chart. e.g. {"chart":{},"data":[{"label":"Jan","value":"420000"}]}
     */
-$columnChart = new FusionCharts("column2d", "ex1" , "100%", 400, "chart-1", "json", '{
+$columnChart = new FusionCharts("msbar2d", "ex1" , "100%", 400, "chart-1", "json", '{
       "chart": {
-        "caption": "Harry\'s SuperMart - Top 5 Stores\' Revenue",
-        "subCaption": "Last Quarter",
+        "caption": "Split of Sales by Product Category",
+        "subCaption": "5 top performing stores  - last month",
+        "captionPadding": "15",
         "numberPrefix": "$",
-        "rotatevalues": "0",
-        "plotToolText": "<div><b>$label</b><br/>Sales : <b>$$value</b></div>",
+        "showvalues": "1",
+        "valueFontColor": "#ffffff",
+        "placevaluesInside": "1",
+        "usePlotGradientColor": "0",
+        "legendShadow": "0",
+        "showXAxisLine": "1",
+        "xAxisLineColor": "#999999",
+        "divlineColor": "#999999",
+        "divLineIsDashed": "1",
+        "showAlternateVGridColor": "0",
+        "alignCaptionWithCanvas": "0",
+        "legendPadding": "15",
+        "plotToolText": "<div><b>$label</b><br/>Product : <b>$seriesname</b><br/>Sales : <b>$$value</b></div>",
         "theme": "fint"
       },
-      "data": [{
-        "label": "Bakersfield Central",
-        "value": "880000"
+      "categories": [{
+        "category": [{
+          "label": "Garden Groove harbour"
+        }, {
+          "label": "Bakersfield Central"
+        }, {
+          "label": "Los Angeles Topanga"
+        }, {
+          "label": "Compton-Rancho Dom"
+        }, {
+          "label": "Daly City Serramonte"
+        }]
+      }],
+      "dataset": [{
+        "seriesname": "Non-Food Products",
+        "data": [{
+          "value": "28800"
+        }, {
+          "value": "25400"
+        }, {
+          "value": "21800"
+        }, {
+          "value": "19500"
+        }, {
+          "value": "11500"
+        }]
       }, {
-        "label": "Garden Groove harbour",
-        "value": "730000"
-      }, {
-        "label": "Los Angeles Topanga",
-        "value": "590000"
-      }, {
-        "label": "Compton-Rancho Dom",
-        "value": "520000"
-      }, {
-        "label": "Daly City Serramonte",
-        "value": "330000"
+        "seriesname": "Food Products",
+        "data": [{
+          "value": "17000"
+        }, {
+          "value": "19500"
+        }, {
+          "value": "12500"
+        }, {
+          "value": "14500"
+        }, {
+          "value": "17500"
+        }]
       }]
     }');
 // Render the chart
@@ -106,6 +137,5 @@ $columnChart->render();
 ?>
 <div id="chart-1"><!-- Fusion Charts will render here--></div>
  
-
 </body>
 </html>
