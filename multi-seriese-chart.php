@@ -100,23 +100,6 @@ if(isset($_POST['formSubmit']))
   $name[1]; // last name
 }
 
-/*$strQuery2 = "SELECT First_Name, Last_Name FROM Stats WHERE (First_Name = 'Rajon' AND Last_Name = 'Rondo'); ";
-$result2 = $dbhandle->query($strQuery2) or exit("Error code ({$dbhandle->errno}): {$dbhandle->error}");
-
-if($result2){
-   while($row = mysqli_fetch_array($result2)) {
-    print $row["First_Name"];
-    print $row["Last_Name"];
-   }
-}*/
-
-/* Create drop
-$testFirstName = "Rajon";
-$testLastName = "Rondo";
-$FullName = $testFirstName . " " . $testLastName;
-print $FullName;
-*/
-
 $strQuery = "SELECT PPG FROM Stats WHERE (First_Name = '$name[0]' AND Last_Name = '$name[1]'); ";
   $result = $dbhandle->query($strQuery) or exit("Error code ({$dbhandle->errno}): {$dbhandle->error}");
 
