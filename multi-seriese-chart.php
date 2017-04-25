@@ -73,12 +73,6 @@ function getName() {
 <br>
 
 <?php
-if(isset($_POST['formSubmit']))
-{
-  $FullName = $_POST["name"];
-}
-
-
 // Including the wrapper file in the page
 include("fusioncharts.php");
 
@@ -93,6 +87,17 @@ $dbhandle = new mysqli($hostdb, $userdb, $passdb, $namedb);
 /*Render an error message, to avoid abrupt failure, if the database connection parameters are incorrect */
 if ($dbhandle->connect_error) {
   exit("There was an error with your connection: ".$dbhandle->connect_error);
+}
+
+
+$name;
+if(isset($_POST['formSubmit']))
+{
+  $FullName = $_POST["name"];
+  global $name;
+  $name = explode(" ", $FullName);
+  $name[0]; //first name
+  $name[1]; // last name
 }
 
 /*$strQuery2 = "SELECT First_Name, Last_Name FROM Stats WHERE (First_Name = 'Rajon' AND Last_Name = 'Rondo'); ";
@@ -112,7 +117,7 @@ $FullName = $testFirstName . " " . $testLastName;
 print $FullName;
 */
 
-$strQuery = "SELECT PPG FROM Stats; ";
+$strQuery = "SELECT PPG FROM Stats WHERE (First_Name = '$name[0]' AND Last_Name = '$name[1]'); ";
   $result = $dbhandle->query($strQuery) or exit("Error code ({$dbhandle->errno}): {$dbhandle->error}");
 
 
