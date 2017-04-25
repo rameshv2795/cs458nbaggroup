@@ -49,13 +49,35 @@
 
 </style>
 
+<script>
+function getName() {
+    //document.getElementById("mySelect").disabled=true;
+
+}
+</script>
+
 </head>
 <body>
-<?php
 
-/**
-* This example describes the multi seriese chart preparation using FusionCharts PHP wrapper
-*/
+<form method="post" action="<?php echo htmlentities($_SERVER['PHP_SELF']); ?>">
+<select id="name" name="name">
+  <option value="Rajon Rondo">Rajon Rondo</option>
+  <option>Place Holder</option>
+  <option>Place Holder</option>
+  <option>Place Holder</option>
+</select>
+<br><br>
+<input type="submit" name="formSubmit" value="Submit">
+</form>
+
+<br>
+
+<?php
+if(isset($_POST['formSubmit']))
+{
+  $val = $_POST["name"];
+  print $val;
+}
 
 
 // Including the wrapper file in the page
@@ -73,8 +95,28 @@ $dbhandle = new mysqli($hostdb, $userdb, $passdb, $namedb);
 if ($dbhandle->connect_error) {
   exit("There was an error with your connection: ".$dbhandle->connect_error);
 }
-$strQuery = "SELECT DISTINCT PPG FROM Stats; ";
+
+/*$strQuery2 = "SELECT First_Name, Last_Name FROM Stats WHERE (First_Name = 'Rajon' AND Last_Name = 'Rondo'); ";
+$result2 = $dbhandle->query($strQuery2) or exit("Error code ({$dbhandle->errno}): {$dbhandle->error}");
+
+if($result2){
+   while($row = mysqli_fetch_array($result2)) {
+    print $row["First_Name"];
+    print $row["Last_Name"];
+   }
+}*/
+
+/* Create drop
+$testFirstName = "Rajon";
+$testLastName = "Rondo";
+$FullName = $testFirstName . " " . $testLastName;
+print $FullName;
+*/
+
+$strQuery = "SELECT PPG FROM Stats; ";
   $result = $dbhandle->query($strQuery) or exit("Error code ({$dbhandle->errno}): {$dbhandle->error}");
+
+
 if ($result) {
     // Preparing the object of FusionCharts with needed informations
     /**
@@ -90,7 +132,7 @@ if ($result) {
 
       $arrData = array(
         "chart" => array(
-        "caption"=> "Rajon Rondo",
+        "caption"=> $FullName,
         "subCaption"=> "Points per game",
         "captionPadding"=> "15",
         //"numberPrefix"=> "$",
