@@ -64,12 +64,12 @@ function getName() {
 <body>
 
 <form method="post" action="<?php echo htmlentities($_SERVER['PHP_SELF']); ?>">
-<select id="name" name="name">
+<!--<select id="name" name="name">
   <option value="Rajon Rondo">Rajon Rondo</option>
   <option>Place Holder</option>
   <option>Place Holder</option>
-  <option>Place Holder</option>
-</select>
+  <option>Place Holder</option> 
+</select> -->
 <select id="nbateamid" name="nbateamid">
 	<option value="">Select Team</option>
 	<?php echo add_teams();?>
@@ -160,15 +160,22 @@ if ($dbhandle->connect_error) {
 $name;
 if(isset($_POST['formSubmit']))
 {
-  $FullName = $_POST["name"];
+  $FullName = $_POST["player"];
   global $name;
   $name = explode(" ", $FullName);
   $name[0]; //first name
   $name[1]; // last name
 }
+/*
+$strQuery = 
+"SELECT * FROM statistics WHERE nba_player 
+IN(SELECT playerid FROM player WHERE FirstName = '".$_POST["player"]."')";
+*/
 
-$strQuery = "SELECT PPG FROM Stats WHERE (First_Name = '$name[0]' AND Last_Name = '$name[1]'); ";
-  $result = $dbhandle->query($strQuery) or exit("Error code ({$dbhandle->errno}): {$dbhandle->error}");
+$strQuery = "SELECT * FROM statistics WHERE nba_player = '".$_POST["player"]."'";
+//echo $_POST["player"];
+//$strQuery = "SELECT PPG FROM Stats WHERE (First_Name = '$name[0]' AND Last_Name = '$name[1]'); ";
+ $result = $dbhandle->query($strQuery) or exit("Error code ({$dbhandle->errno}): {$dbhandle->error}");
 
 
 if ($result) {
@@ -216,6 +223,7 @@ if ($result) {
     while($row = mysqli_fetch_array($result)) {
       array_push($categoryArray, array(
         "label" => 'Year'
+		//echo "HERE";
         )
       );
       array_push($dataseries1, array("value" => $row["PPG"]));
