@@ -19,7 +19,7 @@ if ($dbhandle->connect_error) {
   $output = '<option value =""> Select Player</option>';
 
   while($row = mysqli_fetch_array($result)){
-	$output .= ' <option value="'.$row["playerid"].'">'.$row["FirstName"].'</option>';
+	$output .= ' <option value="'.$row["playerid"].'">'.$row["FirstName"].' '.$row["LastName"].'</option>';
 	//$output = '<option value =""> GOOD</option>';
  }
 

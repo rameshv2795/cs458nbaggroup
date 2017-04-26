@@ -160,11 +160,20 @@ if ($dbhandle->connect_error) {
 $name;
 if(isset($_POST['formSubmit']))
 {
-  $FullName = $_POST["player"];
+  /*$FullName = $_POST["player"];
   global $name;
   $name = explode(" ", $FullName);
   $name[0]; //first name
-  $name[1]; // last name
+  $name[1]; // last name*/
+  /*Set name for caption*/
+  $strQuery = "SELECT * FROM player WHERE playerid = '".$_POST["player"]."'";
+  $result = $dbhandle->query($strQuery) or exit("Error code ({$dbhandle->errno}): {$dbhandle->error}");
+  while($entry = $result -> fetch_assoc()){
+		$selected_first_name = $entry["FirstName"];
+		$selected_last_name = $entry["LastName"];
+  }
+  $full_name = $selected_first_name . ' ' . $selected_last_name;
+  
 }
 /*
 $strQuery = 
@@ -193,7 +202,7 @@ if ($result) {
 
       $arrData = array(
         "chart" => array(
-        "caption"=> $FullName,
+        "caption"=> $full_name,
         "subCaption"=> "Points per game",
         "captionPadding"=> "15",
         //"numberPrefix"=> "$",
