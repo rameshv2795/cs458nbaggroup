@@ -20,7 +20,6 @@ if ($dbhandle->connect_error) {
 
   while($row = mysqli_fetch_array($result)){
 	$output .= ' <option value="'.$row["playerid"].'">'.$row["FirstName"].' '.$row["LastName"].'</option>';
-	//$output = '<option value =""> GOOD</option>';
  }
 
 

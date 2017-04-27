@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link href="css/extension-page-style.css" rel="stylesheet" type="text/css"  />
+<link href="style.css" rel="stylesheet" type="text/css"  />
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script type="text/javascript" src="http://static.fusioncharts.com/code/latest/fusioncharts.js"></script>
 <script src="http://static.fusioncharts.com/code/latest/fusioncharts.charts.js"></script>
@@ -52,24 +52,10 @@
 
 </style>
 
-<script>
-function getName() {
-    //document.getElementById("mySelect").disabled=true;
-
-}
-</script>
-
-
 </head>
 <body>
 
 <form method="post" action="<?php echo htmlentities($_SERVER['PHP_SELF']); ?>">
-<!--<select id="name" name="name">
-  <option value="Rajon Rondo">Rajon Rondo</option>
-  <option>Place Holder</option>
-  <option>Place Holder</option>
-  <option>Place Holder</option> 
-</select> -->
 <select id="nbateamid" name="nbateamid">
 	<option value="">Select Team</option>
 	<?php echo add_teams();?>
@@ -86,7 +72,6 @@ function getName() {
 <br>
 
 <script>
-
 $(document).ready(function()
 {
 
@@ -108,20 +93,15 @@ $(document).ready(function()
 		
 	});
 });
-
-
 </script>
-
-
-
 
 <?php
 function add_teams(){
 
 $hostdb = "classmysql:3306";  // MySQl host
-$userdb = "cs340_rameshv";  // MySQL username
-$passdb = "6238";  // MySQL password
-$namedb = "cs340_rameshv";  // MySQL database name
+$userdb = "cs340_rameshv";    // MySQL username
+$passdb = "6238";             // MySQL password
+$namedb = "cs340_rameshv";    // MySQL database name
 
 // Establish a connection to the database
 $dbhandle = new mysqli($hostdb, $userdb, $passdb, $namedb);
@@ -138,6 +118,7 @@ $teams_array = array();
 	return $output;
 }
 ?>
+
 <?php
 // Including the wrapper file in the page
 include("fusioncharts.php");
@@ -155,16 +136,8 @@ if ($dbhandle->connect_error) {
   exit("There was an error with your connection: ".$dbhandle->connect_error);
 }
 
-
-
-$name;
 if(isset($_POST['formSubmit']))
 {
-  /*$FullName = $_POST["player"];
-  global $name;
-  $name = explode(" ", $FullName);
-  $name[0]; //first name
-  $name[1]; // last name*/
   /*Set name for caption*/
   $strQuery = "SELECT * FROM player WHERE playerid = '".$_POST["player"]."'";
   $result = $dbhandle->query($strQuery) or exit("Error code ({$dbhandle->errno}): {$dbhandle->error}");
@@ -173,151 +146,115 @@ if(isset($_POST['formSubmit']))
 		$selected_last_name = $entry["LastName"];
   }
   $full_name = $selected_first_name . ' ' . $selected_last_name;
-  
 }
-/*
-$strQuery = 
-"SELECT * FROM statistics WHERE nba_player 
-IN(SELECT playerid FROM player WHERE FirstName = '".$_POST["player"]."')";
-*/
 
 $strQuery = "SELECT * FROM statistics WHERE nba_player = '".$_POST["player"]."'";
-//echo $_POST["player"];
-//$strQuery = "SELECT PPG FROM Stats WHERE (First_Name = '$name[0]' AND Last_Name = '$name[1]'); ";
- $result = $dbhandle->query($strQuery) or exit("Error code ({$dbhandle->errno}): {$dbhandle->error}");
-
+$result = $dbhandle->query($strQuery) or exit("Error code ({$dbhandle->errno}): {$dbhandle->error}");
 
 if ($result) {
-    // Preparing the object of FusionCharts with needed informations
-    /**
-    * The parameters of the constructor are as follows
-    * chartType   {String}  The type of chart that you intend to plot. e.g. Column3D, Column2D, Pie2D etc.
-    * chartId     {String}  Id for the chart, using which it will be recognized in the HTML page. Each chart on the page should have a unique Id.
-    * chartWidth  {String}  Intended width for the chart (in pixels). e.g. 400
-    * chartHeight {String}  Intended height for the chart (in pixels). e.g. 300
-    * containerId {String}  The id of the chart container. e.g. chart-1
-    * dataFormat  {String}  Type of data used to render the chart. e.g. json, jsonurl, xml, xmlurl
-    * dataSource  {String}  Actual data for the chart. e.g. {"chart":{},"data":[{"label":"Jan","value":"420000"}]}
-    */
 
-      $arrData = array(
-        "chart" => array(
-        "caption"=> $full_name,
-        "subCaption"=> "Points per game",
-        "captionPadding"=> "15",
-        //"numberPrefix"=> "$",
-        "showvalues"=> "1",
-        "valueFontColor"=> "#ffffff",
-        "placevaluesInside"=> "1",
-        "usePlotGradientColor"=> "0",
-        "legendShadow"=> "0",
-        "showXAxisLine"=> "1",
-        "xAxisLineColor"=> "#999999",
-        "xAxisname"=> "Year",
-        "yAxisName"=> "PPG",
-        "divlineColor"=> "#999999",
-        "divLineIsDashed"=> "1",
-        "showAlternateVGridColor"=> "0",
-        "alignCaptionWithCanvas"=> "0",
-        "legendPadding"=> "15",
-        "showHoverEffect"=> "1",
-        "plotToolText"=> "<div><b>$label</b><br/>PPG : <b>$value</b><br/>Year : <b>$value</b></div>",
-        "theme"=> "fint"
-            )
-          );
+  // initialize arrays to store stats
+  $ppgArray=array();
+  $apgArray=array();
+  $rpgArray=array();
+  $fgArray=array();
+  $tovArray=array();
+  $ftArray=array();
+  $bpgArray=array();
+  $tpArray=array();
+  $perArray=array();
+  $tsArray=array();
+  $gpArray=array();
+  $yearArray=array();
 
-          $categoryArray=array();
-          $dataseries1=array();
+  while($row = mysqli_fetch_array($result)) {
+    // Collect all data
+    array_push($ppgArray, array("value" => $row["PPG"]));
+    array_push($apgArray, array("value" => $row["APG"]));
+    array_push($rpgArray, array("value" => $row["RPG"]));
+    array_push($fgArray, array("value" => $row["FG%"]));
+    array_push($tovArray, array("value" => $row["TOV"]));
+    array_push($ftArray, array("value" => $row["FT%"]));
+    array_push($bpgArray, array("value" => $row["BPG"]));
+    array_push($tpArray, array("value" => $row["3P%"]));
+    array_push($perArray, array("value" => $row["PER"]));
+    array_push($tsArray, array("value" => $row["TS%"]));
+    array_push($gpArray, array("value" => $row["GP"]));
+    array_push($yearArray, array("label" => $row["year"]));
+  }
 
-    while($row = mysqli_fetch_array($result)) {
-      array_push($categoryArray, array(
-        "label" => 'Year'
-		//echo "HERE";
-        )
-      );
-      array_push($dataseries1, array("value" => $row["PPG"]));
-    }
+  // create charts
+  $chartID = 0;
+  generateChart($ppgArray, $yearArray, $full_name, "Points Per Game", "PPG", $chartID, "chart-ppg");
+  generateChart($apgArray, $yearArray, $full_name, "Assist Per Game", "APG", $chartID+1, "chart-apg");
+  generateChart($rpgArray, $yearArray, $full_name, "Rebounds Per Game", "RPG", $chartID+2, "chart-rpg");
+  generateChart($fgArray, $yearArray, $full_name, "Field Goal Percentage Per Game", "FG%", $chartID+3, "chart-fg");
+  generateChart($tovArray, $yearArray, $full_name, "Turnovers Per Game", "TOV", $chartID+4, "chart-tov");
+  generateChart($ftArray, $yearArray, $full_name, "Free Throw Percentage Per Game", "FT%", $chartID+5, "chart-ft");
+  generateChart($bpgArray, $yearArray, $full_name, "Blocks Per Game", "BPG", $chartID+6, "chart-bpg");
+  generateChart($tpArray, $yearArray, $full_name, "Three Point Percentage Per Game", "3P%", $chartID+7, "chart-tp");
+  generateChart($perArray, $yearArray, $full_name, "Player Efficiency Rating", "PER", $chartID+8, "chart-per");
+  generateChart($tsArray, $yearArray, $full_name, "True Shooting Percentage Per Game", "TS%", $chartID+9, "chart-ts");
+  generateChart($gpArray, $yearArray, $full_name, "Games Played Per Year", "GP", $chartID+10, "chart-gp");
 
-        $arrData["categories"]=array(array("category"=>$categoryArray));
-        $arrData["dataset"] = array(array("seriesName"=> "PPG", "data"=>$dataseries1));
+  // closing db connection
+  $dbhandle->close();
+}
+
+function initChart($full_name, $caption, $genArray, $yearArray){
+    $arrData = array(
+      "chart" => array(
+      "caption"=> $full_name,
+      "subCaption"=> $caption,
+      "captionPadding"=> "15",
+      "showvalues"=> "1",
+      "valueFontColor"=> "#ffffff",
+      "placevaluesInside"=> "1",
+      "usePlotGradientColor"=> "0",
+      "legendShadow"=> "0",
+      "showXAxisLine"=> "1",
+      "xAxisLineColor"=> "#999999",
+      "xAxisname"=> "Year",
+      "yAxisName"=> "PPG",
+      "divlineColor"=> "#999999",
+      "divLineIsDashed"=> "1",
+      "showAlternateVGridColor"=> "0",
+      "alignCaptionWithCanvas"=> "0",
+      "legendPadding"=> "15",
+      "showHoverEffect"=> "1",
+      "plotToolText"=> "<div><b>$label</b><br/>PPG : <b>$genArray</b><br/>Year : <b>$yearArray</b></div>",
+      "theme"=> "fint"
+    )
+  );
+    return $arrData;
+}
+
+function generateChart($genArray, $yearArray, $full_name, $title, $key, $id, $divID){
+  $arrData = initChart($full_name, $title, $genArray, $yearArray);
+  $arrData["categories"]=array(array("category"=>$yearArray));
+  $arrData["dataset"] = array(array("seriesName"=> $key, "data"=>$genArray));
 
   $jsonEncodedData = json_encode($arrData);
 
-      // chart object
-      $msChart = new FusionCharts("msbar2d", "chart1" , "50%", "350", "chart-1", "json", $jsonEncodedData);
+  // chart object
+  $msChart = new FusionCharts("msbar2d", $id , "30%", "350", $divID, "json", $jsonEncodedData);
+  // Render the chart
+  $msChart->render();
+}
 
-      // Render the chart
-      $msChart->render();
-
-      // closing db connection
-      $dbhandle->close();
-
-      }
-
-
-/*$columnChart = new FusionCharts("msbar2d", "ex1" , "50%", 400, "chart-1", "json", '{
-      "chart": {
-        "caption": "Rajon Rondo",
-        "subCaption": "Points per game",
-        "captionPadding": "15",
-        "numberPrefix": "$",
-        "showvalues": "1",
-        "valueFontColor": "#ffffff",
-        "placevaluesInside": "1",
-        "usePlotGradientColor": "0",
-        "legendShadow": "0",
-        "showXAxisLine": "1",
-        "xAxisLineColor": "#999999",
-        "xAxisname": "Year",
-        "yAxisName": "PPG",
-        "divlineColor": "#999999",
-        "divLineIsDashed": "1",
-        "showAlternateVGridColor": "0",
-        "alignCaptionWithCanvas": "0",
-        "legendPadding": "15",
-        "plotToolText": "<div><b>$label</b><br/>Product : <b>$seriesname</b><br/>Sales : <b>$$value</b></div>",
-        "theme": "fint"
-      },
-      "categories": [{
-        "category": [{
-          "label": "Garden Groove harbour"
-        }, {
-          "label": "Bakersfield Central"
-        }]
-      }],
-      "dataset": [{
-        "seriesname": "Non-Food Products",
-        "data": [{
-          "value": "28800"
-        }, {
-          "value": "25400"
-        }, {
-          "value": "21800"
-        }, {
-          "value": "19500"
-        }, {
-          "value": "11500"
-        }]
-      }, {
-        "seriesname": "Food Products",
-        "data": [{
-          "value": "17000"
-        }, {
-          "value": "19500"
-        }, {
-          "value": "12500"
-        }, {
-          "value": "14500"
-        }, {
-          "value": "17500"
-        }]
-      }]
-    }');
-// Render the chart
-$columnChart->render();*/
 ?>
-<div id="chart-1"><!-- Fusion Charts will render here--></div>
- 
+<div class="box" id="chart-ppg"></div>
+<div class="box" id="chart-apg"></div>
+<div class="box" id="chart-rpg"></div>
+<div class="box" id="chart-fg"></div>
+<div class="box" id="chart-tov"></div>
+<div class="box" id="chart-ft"></div>
+<div class="box" id="chart-bpg"></div>
+<div class="box" id="chart-tp"></div>
+<div class="box" id="chart-per"></div>
+<div class="box" id="chart-ts"></div>
+<div class="box" id="chart-gp"></div>
+
 </body>
 </html>
 
