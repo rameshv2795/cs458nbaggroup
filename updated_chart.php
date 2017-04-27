@@ -237,7 +237,7 @@ function generateChart($genArray, $yearArray, $full_name, $title, $key, $id, $di
   $jsonEncodedData = json_encode($arrData);
 
   // chart object
-  $msChart = new FusionCharts("msbar2d", $id , "30%", "350", $divID, "json", $jsonEncodedData);
+  $msChart = new FusionCharts("msbar2d", $id , "30%", "350px", $divID, "json", $jsonEncodedData);
   // Render the chart
   $msChart->render();
 }
