@@ -148,7 +148,7 @@ if(isset($_POST['formSubmit']))
   $full_name = $selected_first_name . ' ' . $selected_last_name;
 }
 
-$strQuery = "SELECT * FROM statistics WHERE nba_player = '".$_POST["player"]."'";
+$strQuery = "SELECT * FROM statistics WHERE nba_player = '".$_POST["player"]."' ORDER BY year ASC";
 $result = $dbhandle->query($strQuery) or exit("Error code ({$dbhandle->errno}): {$dbhandle->error}");
 
 if ($result) {
@@ -225,6 +225,7 @@ function initChart($full_name, $caption, $genArray, $yearArray){
       "plotToolText"=> "<div><b>$label</b><br/>PPG : <b>$genArray</b><br/>Year : <b>$yearArray</b></div>",
       "theme"=> "fint"
     )
+
   );
     return $arrData;
 }
