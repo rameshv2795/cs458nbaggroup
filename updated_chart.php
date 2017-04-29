@@ -52,12 +52,16 @@
 
 </style>
 
+<title>NBA Player Progression</title>
+<h1 id="title"> <center>NBA Player Progression</center> </h1>
+
 </head>
 <body>
-
-<form method="post" action="<?php echo htmlentities($_SERVER['PHP_SELF']); ?>">
+<br>
+<form id="search_form" method="post" action="<?php echo htmlentities($_SERVER['PHP_SELF']); ?>">
 <select id="nbateamid" name="nbateamid">
-	<option value="">Select Team</option>
+<!-- 	<option value="">Select Team</option> -->
+	
 	<?php echo add_teams();?>
 </select>
 <select id="player" name="player">
@@ -74,18 +78,36 @@
 <script>
 $(document).ready(function()
 {
-
-	$('#nbateamid').change(function(){
+	$('#nbateamid').ready(function(){
 		var team_id = $(this).val();
-
 		$.ajax({
-			url:"player_drop.php",
+			url: "player_all_drop.php",
 			method:"POST",
 			data:{team_id:team_id},
 			dataType: "text",
 			success:function(data){
 				//alert(team_id);
+				
 				$('#player').html(data);
+				
+				
+			}
+		
+		});
+		
+	});
+	$('#nbateamid').change(function(){
+		var team_id = $(this).val();
+		$.ajax({
+			url: (team_id != "All Teams") ? "player_drop.php" : "player_all_drop.php",
+			method:"POST",
+			data:{team_id:team_id},
+			dataType: "text",
+			success:function(data){
+				//alert(team_id);
+				
+				$('#player').html(data);
+				
 				
 			}
 		
@@ -109,9 +131,14 @@ $dbhandle = new mysqli($hostdb, $userdb, $passdb, $namedb);
 $sql = "SELECT TeamName FROM team";
 $set_teams = $dbhandle -> query($sql);
 $teams_array = array();
+	$all_players = 0;
 
 	//echo "<select name='team' id='selected_team'>";
 	while($entry = $set_teams -> fetch_assoc()){
+		if($all_players == 0){
+			$output .= "<option value = 'All Teams'> All Teams </option>";
+			$all_players = 1;
+		}
 		$output .= "<option value ='" . $entry["TeamName"] . "'>" . $entry['TeamName'] . "</option>";
 	}
 	//echo "</select>";
@@ -169,7 +196,7 @@ if ($result) {
 
   while($row = mysqli_fetch_array($result)) {
     // Collect all data
-    array_push($ppgArray, array("value" => $row["PPG"]));
+    array_push($ppgArray, array("value" => $row["PPG"],"id" =>"NA"));
     array_push($apgArray, array("value" => $row["APG"]));
     array_push($rpgArray, array("value" => $row["RPG"]));
     array_push($fgArray, array("value" => $row["FG%"]));
@@ -202,7 +229,8 @@ if ($result) {
 }
 
 function initChart($full_name, $caption, $genArray, $yearArray){
-    $arrData = array(
+
+	$arrData = array(
       "chart" => array(
       "caption"=> $full_name,
       "subCaption"=> $caption,
@@ -221,21 +249,46 @@ function initChart($full_name, $caption, $genArray, $yearArray){
       "showAlternateVGridColor"=> "0",
       "alignCaptionWithCanvas"=> "0",
       "legendPadding"=> "15",
+	 // "plotGradientColor" => "#33333",
+	 // "usePlotGradientColor" => true,
       "showHoverEffect"=> "1",
       "plotToolText"=> "<div><b>$label</b><br/>PPG : <b>$genArray</b><br/>Year : <b>$yearArray</b></div>",
       "theme"=> "fint"
-    )
+    ),
+	  "colorrange" => array(
+			"minvalue" => "0",
+			"startlabel" => "Low",
+			"endlabel"=> "High",
+			"code"=> "#FF4411",
+			"gradient"=> "1",
+			"color" => array(
+				"display" => array(
+					"maxvalue"=> "25",
+					"code"=> "#FFDD44",
+					"displayValue"=> "Median"
+				),
+				"code" => array(
+					"maxvalue"=> "100",
+					"code"=> "#6baa01"
+				)
+			)
+			)
+			
 
   );
     return $arrData;
 }
 
+
 function generateChart($genArray, $yearArray, $full_name, $title, $key, $id, $divID){
   $arrData = initChart($full_name, $title, $genArray, $yearArray);
   $arrData["categories"]=array(array("category"=>$yearArray));
   $arrData["dataset"] = array(array("seriesName"=> $key, "data"=>$genArray));
-
+  //$arrColor = initColor();
+  
   $jsonEncodedData = json_encode($arrData);
+  //$jsonEncodedDataColor = json_encode($arrColor);
+  
 
   // chart object
   $msChart = new FusionCharts("msbar2d", $id , "30%", "350px", $divID, "json", $jsonEncodedData);
@@ -244,6 +297,8 @@ function generateChart($genArray, $yearArray, $full_name, $title, $key, $id, $di
 }
 
 ?>
+<!--<div class="title" id="chart-ppg"></div>-->
+
 <div class="box" id="chart-ppg"></div>
 <div class="box" id="chart-apg"></div>
 <div class="box" id="chart-rpg"></div>

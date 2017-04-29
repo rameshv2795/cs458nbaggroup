@@ -13,14 +13,16 @@ if ($dbhandle->connect_error) {
 }
   
 	  $output = '';
-	  $sql = "SELECT * FROM player WHERE team = '".$_POST["team_id"]."'ORDER BY LastName";
+	  $sql = "SELECT * FROM player ORDER BY LastName";
 	  $result = $dbhandle -> query($sql);
 	  
 	  $output = '<option value =""> Select Player</option>';
-
+	  
 	  while($row = mysqli_fetch_array($result)){
-		$output .= ' <option value="'.$row["playerid"].'">'.$row["LastName"].', '.$row["FirstName"].'</option>';
+			$output .= ' <option value="'.$row["playerid"].'">'.$row["LastName"].', '.$row["FirstName"].'</option>';
 	 }
+
+
  
 
 echo $output;
