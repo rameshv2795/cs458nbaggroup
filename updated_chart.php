@@ -105,7 +105,7 @@ $(document).ready(function()
 			dataType: "text",
 			success:function(data){
 				//alert(team_id);
-				
+				//if()
 				$('#player').html(data);
 				
 				

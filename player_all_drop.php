@@ -14,7 +14,10 @@ if ($dbhandle->connect_error) {
   
 	  $output = '';
 	  $sql = "SELECT * FROM player ORDER BY LastName";
-	  $result = $dbhandle -> query($sql);
+	  
+	  $result = $dbhandle -> prepare($sql);
+	  $result -> execute();
+	  $result = $result -> get_result();
 	  
 	  $output = '<option value =""> Select Player</option>';
 	  

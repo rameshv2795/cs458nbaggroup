@@ -11,10 +11,16 @@ $dbhandle = new mysqli($hostdb, $userdb, $passdb, $namedb);
 if ($dbhandle->connect_error) {
   exit("There was an error with your connection: ".$dbhandle->connect_error);
 }
-  
+	
 	  $output = '';
-	  $sql = "SELECT * FROM player WHERE team = '".$_POST["team_id"]."'ORDER BY LastName";
-	  $result = $dbhandle -> query($sql);
+	  $sql = "SELECT * FROM player WHERE team = ? ORDER BY LastName";
+	  
+	  $result = $dbhandle -> prepare($sql);
+	  $result -> bind_param("s",$_POST["team_id"]);
+	  $result -> execute();
+	  $result = $result -> get_result();
+	  
+	  //$result = $dbhandle -> query($sql);
 	  
 	  $output = '<option value =""> Select Player</option>';
 
