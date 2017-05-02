@@ -166,8 +166,11 @@ if ($dbhandle->connect_error) {
 if(isset($_POST['formSubmit']))
 {
   /*Set name for caption*/
-  $strQuery = "SELECT * FROM player WHERE playerid = '".$_POST["player"]."'";
-  $result = $dbhandle->query($strQuery) or exit("Error code ({$dbhandle->errno}): {$dbhandle->error}");
+  $strQuery = "SELECT * FROM player WHERE playerid = ?";
+  $result = $dbhandle -> prepare($strQuery);
+  $result -> bind_param("s",$_POST["player"]);
+  $result -> execute();
+  $result = $result -> get_result();
   while($entry = $result -> fetch_assoc()){
 		$selected_first_name = $entry["FirstName"];
 		$selected_last_name = $entry["LastName"];
@@ -175,8 +178,11 @@ if(isset($_POST['formSubmit']))
   $full_name = $selected_first_name . ' ' . $selected_last_name;
 }
 
-$strQuery = "SELECT * FROM statistics WHERE nba_player = '".$_POST["player"]."' ORDER BY year ASC";
-$result = $dbhandle->query($strQuery) or exit("Error code ({$dbhandle->errno}): {$dbhandle->error}");
+$strQuery = "SELECT * FROM statistics WHERE nba_player = ? ORDER BY year ASC";
+$result = $dbhandle -> prepare($strQuery);
+$result -> bind_param("s",$_POST["player"]);
+$result -> execute();
+$result = $result -> get_result();
 
 if ($result) {
 
