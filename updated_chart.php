@@ -185,6 +185,8 @@ $strQuery = "SELECT * FROM statistics WHERE nba_player = '".$_POST["player"]."'"
 //$result = $result -> get_result();
  $result = $dbhandle -> query($strQuery);
 
+$colorRange = initColorRange();
+
 if ($result) {
 
   // initialize arrays to store stats
@@ -201,20 +203,30 @@ if ($result) {
   $gpArray=array();
   $yearArray=array();
 
+  $i = 0;
+  $barColor;
+
   while($row = mysqli_fetch_array($result)) {
     // Collect all data
-    array_push($ppgArray, array("value" => $row["PPG"]));
-    array_push($apgArray, array("value" => $row["APG"]));
-    array_push($rpgArray, array("value" => $row["RPG"]));
-    array_push($fgArray, array("value" => $row["FG%"]));
-    array_push($tovArray, array("value" => $row["TOV"]));
-    array_push($ftArray, array("value" => $row["FT%"]));
-    array_push($bpgArray, array("value" => $row["BPG"]));
-    array_push($tpArray, array("value" => $row["3P%"]));
-    array_push($perArray, array("value" => $row["PER"]));
-    array_push($tsArray, array("value" => $row["TS%"]));
-    array_push($gpArray, array("value" => $row["GP"]));
-    array_push($yearArray, array("label" => $row["year"]));
+    if($i == 0){
+      $barColor = $colorRange[5];
+    }
+    else{
+      $barColor = $colorRange[11];
+    }
+    array_push($ppgArray, array("value" => $row["PPG"], "color"=>$barColor));
+    array_push($apgArray, array("value" => $row["APG"], "color"=>$barColor));
+    array_push($rpgArray, array("value" => $row["RPG"], "color"=>$barColor));
+    array_push($fgArray, array("value" => $row["FG%"], "color"=>$barColor));
+    array_push($tovArray, array("value" => $row["TOV"], "color"=>$barColor));
+    array_push($ftArray, array("value" => $row["FT%"], "color"=>$barColor));
+    array_push($bpgArray, array("value" => $row["BPG"], "color"=>$barColor));
+    array_push($tpArray, array("value" => $row["3P%"], "color"=>$barColor));
+    array_push($perArray, array("value" => $row["PER"], "color"=>$barColor));
+    array_push($tsArray, array("value" => $row["TS%"], "color"=>$barColor));
+    array_push($gpArray, array("value" => $row["GP"], "color"=>$barColor));
+    array_push($yearArray, array("label" => $row["year"], "color"=>$barColor));
+    $i++;
   }
 
   // create charts
@@ -233,6 +245,24 @@ if ($result) {
 
   // closing db connection
   $dbhandle->close();
+}
+
+function initColorRange(){
+  $color = array(
+    "#ff0004",  // RED
+    "#ff2400",
+    "#ff4e00",
+    "#ff7800",
+    "#ffa200",
+    "#ffcc00",  // YELLOW
+    "#fff500",
+    "#deff00",
+    "#b4ff00",
+    "#8aff00",
+    "#60ff00",
+    "#36ff00"   // GREEN
+    );
+  return $color;
 }
 
 function initChart($full_name, $caption, $genArray, $yearArray){
