@@ -178,11 +178,12 @@ if(isset($_POST['formSubmit']))
   $full_name = $selected_first_name . ' ' . $selected_last_name;
 }
 
-$strQuery = "SELECT * FROM statistics WHERE nba_player = ? ORDER BY year ASC";
-$result = $dbhandle -> prepare($strQuery);
-$result -> bind_param("s",$_POST["player"]);
-$result -> execute();
-$result = $result -> get_result();
+$strQuery = "SELECT * FROM statistics WHERE nba_player = '".$_POST["player"]."'";
+//$result = $dbhandle -> prepare($strQuery);
+//$result -> bind_param("s",$_POST["player"]);
+//$result -> execute();
+//$result = $result -> get_result();
+ $result = $dbhandle -> query($strQuery);
 
 if ($result) {
 
@@ -202,7 +203,7 @@ if ($result) {
 
   while($row = mysqli_fetch_array($result)) {
     // Collect all data
-    array_push($ppgArray, array("value" => $row["PPG"],"id" =>"NA"));
+    array_push($ppgArray, array("value" => $row["PPG"]));
     array_push($apgArray, array("value" => $row["APG"]));
     array_push($rpgArray, array("value" => $row["RPG"]));
     array_push($fgArray, array("value" => $row["FG%"]));
@@ -260,25 +261,8 @@ function initChart($full_name, $caption, $genArray, $yearArray){
       "showHoverEffect"=> "1",
       "plotToolText"=> "<div><b>$label</b><br/>PPG : <b>$genArray</b><br/>Year : <b>$yearArray</b></div>",
       "theme"=> "fint"
-    ),
-	  "colorrange" => array(
-			"minvalue" => "0",
-			"startlabel" => "Low",
-			"endlabel"=> "High",
-			"code"=> "#FF4411",
-			"gradient"=> "1",
-			"color" => array(
-				"display" => array(
-					"maxvalue"=> "25",
-					"code"=> "#FFDD44",
-					"displayValue"=> "Median"
-				),
-				"code" => array(
-					"maxvalue"=> "100",
-					"code"=> "#6baa01"
-				)
-			)
-			)
+    )
+
 			
 
   );
