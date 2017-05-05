@@ -178,7 +178,7 @@ if(isset($_POST['formSubmit']))
   $full_name = $selected_first_name . ' ' . $selected_last_name;
 }
 
-$strQuery = "SELECT * FROM statistics WHERE nba_player = '".$_POST["player"]."'";
+$strQuery = "SELECT * FROM statistics WHERE nba_player = '".$_POST["player"]."'ORDER BY year" ;
 //$result = $dbhandle -> prepare($strQuery);
 //$result -> bind_param("s",$_POST["player"]);
 //$result -> execute();
