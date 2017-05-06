@@ -369,7 +369,7 @@ function initChart($full_name, $caption, $genArray, $yearArray){
       "subCaption"=> $caption,
       "captionPadding"=> "15",
       "showvalues"=> "1",
-      "valueFontColor"=> "#ffffff",
+      "valueFontColor"=> "#000000",
       "placevaluesInside"=> "1",
       "usePlotGradientColor"=> "0",
       "legendShadow"=> "0",
