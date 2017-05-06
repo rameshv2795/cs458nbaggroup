@@ -203,30 +203,102 @@ if ($result) {
   $gpArray=array();
   $yearArray=array();
 
-  $i = 0;
+  $start = True;
   $barColor;
+  $arrayVal = array();
+  $i = 0;
 
   while($row = mysqli_fetch_array($result)) {
     // Collect all data
-    if($i == 0){
-      $barColor = $colorRange[5];
+    if($start){
+      $barColor = $colorRange[4];
+      array_push($ppgArray, array("value" => $row["PPG"], "color"=>$barColor));
+      array_push($apgArray, array("value" => $row["APG"], "color"=>$barColor));
+      array_push($rpgArray, array("value" => $row["RPG"], "color"=>$barColor));
+      array_push($fgArray, array("value" => $row["FG%"], "color"=>$barColor));
+      array_push($tovArray, array("value" => $row["TOV"], "color"=>$barColor));
+      array_push($ftArray, array("value" => $row["FT%"], "color"=>$barColor));
+      array_push($bpgArray, array("value" => $row["BPG"], "color"=>$barColor));
+      array_push($tpArray, array("value" => $row["3P%"], "color"=>$barColor));
+      array_push($perArray, array("value" => $row["PER"], "color"=>$barColor));
+      array_push($tsArray, array("value" => $row["TS%"], "color"=>$barColor));
+      array_push($gpArray, array("value" => $row["GP"], "color"=>$barColor));
+      array_push($yearArray, array("label" => $row["year"]));
+
+      array_push($arrayVal, $row["PPG"]);
+      array_push($arrayVal, $row["APG"]);
+      array_push($arrayVal, $row["RPG"]);
+      array_push($arrayVal, $row["FG%"]);
+      array_push($arrayVal, $row["TOV"]);
+      array_push($arrayVal, $row["FT%"]);
+      array_push($arrayVal, $row["BPG"]);
+      array_push($arrayVal, $row["3P%"]);
+      array_push($arrayVal, $row["PER"]);
+      array_push($arrayVal, $row["TS%"]);
+      array_push($arrayVal, $row["GP"]);
+      $start = False;
+      continue;
     }
     else{
-      $barColor = $colorRange[11];
+      $barColor = getColor($arrayVal[$i], $row["PPG"], $colorRange);
+      array_push($ppgArray, array("value" => $row["PPG"], "color"=>$barColor));
+      $i++;
+
+      $barColor = getColor($arrayVal[$i], $row["APG"], $colorRange);
+      array_push($apgArray, array("value" => $row["APG"], "color"=>$barColor));
+      $i++;
+
+      $barColor = getColor($arrayVal[$i], $row["RPG"], $colorRange);
+      array_push($rpgArray, array("value" => $row["RPG"], "color"=>$barColor));
+      $i++;
+
+      $barColor = getColor($arrayVal[$i], $row["FG%"], $colorRange);
+      array_push($fgArray, array("value" => $row["FG%"], "color"=>$barColor));
+      $i++;
+
+      $barColor = getColor($arrayVal[$i], $row["TOV"], $colorRange);
+      array_push($tovArray, array("value" => $row["TOV"], "color"=>$barColor));
+      $i++;
+
+      $barColor = getColor($arrayVal[$i], $row["FT%"], $colorRange);
+      array_push($ftArray, array("value" => $row["FT%"], "color"=>$barColor));
+      $i++;
+
+      $barColor = getColor($arrayVal[$i], $row["BPG"], $colorRange);
+      array_push($bpgArray, array("value" => $row["BPG"], "color"=>$barColor));
+      $i++;
+
+      $barColor = getColor($arrayVal[$i], $row["3P%"], $colorRange);
+      array_push($tpArray, array("value" => $row["3P%"], "color"=>$barColor));
+      $i++;
+
+      $barColor = getColor($arrayVal[$i], $row["PER"], $colorRange);
+      array_push($perArray, array("value" => $row["PER"], "color"=>$barColor));
+      $i++;
+
+      $barColor = getColor($arrayVal[$i], $row["TS%"], $colorRange);
+      array_push($tsArray, array("value" => $row["TS%"], "color"=>$barColor));
+      $i++;
+
+      $barColor = getColor($arrayVal[$i], $row["GP"], $colorRange);
+      array_push($gpArray, array("value" => $row["GP"], "color"=>$barColor));
+      $i++;
+
+      array_push($yearArray, array("label" => $row["year"]));
     }
-    array_push($ppgArray, array("value" => $row["PPG"], "color"=>$barColor));
-    array_push($apgArray, array("value" => $row["APG"], "color"=>$barColor));
-    array_push($rpgArray, array("value" => $row["RPG"], "color"=>$barColor));
-    array_push($fgArray, array("value" => $row["FG%"], "color"=>$barColor));
-    array_push($tovArray, array("value" => $row["TOV"], "color"=>$barColor));
-    array_push($ftArray, array("value" => $row["FT%"], "color"=>$barColor));
-    array_push($bpgArray, array("value" => $row["BPG"], "color"=>$barColor));
-    array_push($tpArray, array("value" => $row["3P%"], "color"=>$barColor));
-    array_push($perArray, array("value" => $row["PER"], "color"=>$barColor));
-    array_push($tsArray, array("value" => $row["TS%"], "color"=>$barColor));
-    array_push($gpArray, array("value" => $row["GP"], "color"=>$barColor));
-    array_push($yearArray, array("label" => $row["year"], "color"=>$barColor));
-    $i++;
+
+    array_push($arrayVal, $row["PPG"]);
+    array_push($arrayVal, $row["APG"]);
+    array_push($arrayVal, $row["RPG"]);
+    array_push($arrayVal, $row["FG%"]);
+    array_push($arrayVal, $row["TOV"]);
+    array_push($arrayVal, $row["FT%"]);
+    array_push($arrayVal, $row["BPG"]);
+    array_push($arrayVal, $row["3P%"]);
+    array_push($arrayVal, $row["PER"]);
+    array_push($arrayVal, $row["TS%"]);
+    array_push($arrayVal, $row["GP"]);
+
   }
 
   // create charts
@@ -247,15 +319,39 @@ if ($result) {
   $dbhandle->close();
 }
 
+function getColor($prev, $cur, $colorRange){
+  if($prev == 0)
+    $prev = 0.1;
+  $val = $cur / $prev;
+  if($val <= 0.50)
+    return $colorRange[0]; 
+  else if($val > 0.50 && $val <= 0.60)
+    return $colorRange[1];
+  else if($val > 0.60 && $val <= 0.70)
+    return $colorRange[2];
+  else if($val > 0.70 && $val <= 0.80)
+    return $colorRange[3];
+  else if($val > 0.80 && $val <= 0.90)
+    return $colorRange[4];
+  else if($val > 0.9 && $val <= 1.0)
+    return $colorRange[5];
+  else if($val > 1.0 && $val <= 1.1)
+    return $colorRange[6];
+  else if($val > 1.1 && $val <= 1.2)
+    return $colorRange[7];
+  else if($val > 1.2 && $val <= 1.3)
+    return $colorRange[8];
+  else if($val > 1.3)
+    return $colorRange[9];
+}
+
 function initColorRange(){
   $color = array(
     "#ff0004",  // RED
     "#ff2400",
     "#ff4e00",
     "#ff7800",
-    "#ffa200",
     "#ffcc00",  // YELLOW
-    "#fff500",
     "#deff00",
     "#b4ff00",
     "#8aff00",
