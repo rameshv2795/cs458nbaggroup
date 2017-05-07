@@ -185,8 +185,6 @@ $strQuery = "SELECT * FROM statistics WHERE nba_player = '".$_POST["player"]."'O
 //$result = $result -> get_result();
  $result = $dbhandle -> query($strQuery);
 
-$colorRange = initColorRange();
-
 if ($result) {
 
   // initialize arrays to store stats
@@ -202,6 +200,8 @@ if ($result) {
   $tsArray=array();
   $gpArray=array();
   $yearArray=array();
+
+  $colorRange = initColorRange();
 
   $start = True;
   $barColor;
@@ -257,6 +257,7 @@ if ($result) {
       $i++;
 
       $barColor = getColor($arrayVal[$i], $row["TOV"], $colorRange);
+      $barColor = getOppositeColor($barColor, $colorRange);
       array_push($tovArray, array("value" => $row["TOV"], "color"=>$barColor));
       $i++;
 
@@ -343,6 +344,16 @@ function getColor($prev, $cur, $colorRange){
     return $colorRange[8];
 }
 
+function getOppositeColor($barColor, $colorRange){
+  $length = count($colorRange);
+  for($i = 0; $i < $length; $i++){
+    if($barColor == $colorRange[$i]){
+      $opp = 8 - $i;
+      return $colorRange[$opp];
+    }
+  }
+}
+
 function initColorRange(){
   $color = array(
     "#ff0003",  // RED
@@ -358,7 +369,7 @@ function initColorRange(){
   return $color;
 }
 
-function initChart($full_name, $caption, $genArray, $yearArray){
+function initChart($full_name, $caption, $genArray, $yearArray, $key){
 
 	$arrData = array(
       "chart" => array(
@@ -373,20 +384,15 @@ function initChart($full_name, $caption, $genArray, $yearArray){
       "showXAxisLine"=> "1",
       "xAxisLineColor"=> "#999999",
       "xAxisname"=> "Year",
-      "yAxisName"=> "PPG",
+      "yAxisName"=> $key,
       "divlineColor"=> "#999999",
       "divLineIsDashed"=> "1",
       "showAlternateVGridColor"=> "0",
       "alignCaptionWithCanvas"=> "0",
       "legendPadding"=> "15",
-	 // "plotGradientColor" => "#33333",
-	 // "usePlotGradientColor" => true,
-      "showHoverEffect"=> "1",
-      "plotToolText"=> "<div><b>$label</b><br/>PPG : <b>$genArray</b><br/>Year : <b>$yearArray</b></div>",
+      "showHoverEffect"=> "0",
       "theme"=> "fint"
     )
-
-			
 
   );
     return $arrData;
@@ -394,13 +400,11 @@ function initChart($full_name, $caption, $genArray, $yearArray){
 
 
 function generateChart($genArray, $yearArray, $full_name, $title, $key, $id, $divID){
-  $arrData = initChart($full_name, $title, $genArray, $yearArray);
+  $arrData = initChart($full_name, $title, $genArray, $yearArray, $key);
   $arrData["categories"]=array(array("category"=>$yearArray));
   $arrData["dataset"] = array(array("seriesName"=> $key, "data"=>$genArray));
-  //$arrColor = initColor();
   
   $jsonEncodedData = json_encode($arrData);
-  //$jsonEncodedDataColor = json_encode($arrColor);
   
 
   // chart object
@@ -410,8 +414,6 @@ function generateChart($genArray, $yearArray, $full_name, $title, $key, $id, $di
 }
 
 ?>
-<!--<div class="title" id="chart-ppg"></div>-->
-
 <div class="box" id="chart-ppg"></div>
 <div class="box" id="chart-apg"></div>
 <div class="box" id="chart-rpg"></div>
