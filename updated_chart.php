@@ -325,37 +325,34 @@ function getColor($prev, $cur, $colorRange){
   $val = $cur / $prev;
   if($val <= 0.50)
     return $colorRange[0]; 
-  else if($val > 0.50 && $val <= 0.60)
+  else if($val > 0.5 && $val <= 0.65)
     return $colorRange[1];
-  else if($val > 0.60 && $val <= 0.70)
+  else if($val > 0.65 && $val <= 0.80)
     return $colorRange[2];
-  else if($val > 0.70 && $val <= 0.80)
+  else if($val > 0.80 && $val <= 0.95)
     return $colorRange[3];
-  else if($val > 0.80 && $val <= 0.90)
+  else if($val > 0.95 && $val <= 1.0)
     return $colorRange[4];
-  else if($val > 0.9 && $val <= 1.0)
+  else if($val > 1.0 && $val <= 1.15)
     return $colorRange[5];
-  else if($val > 1.0 && $val <= 1.1)
+  else if($val > 1.15 && $val <= 1.3)
     return $colorRange[6];
-  else if($val > 1.1 && $val <= 1.2)
+  else if($val > 1.3 && $val <= 1.45)
     return $colorRange[7];
-  else if($val > 1.2 && $val <= 1.3)
+  else if($val > 1.45)
     return $colorRange[8];
-  else if($val > 1.3)
-    return $colorRange[9];
 }
 
 function initColorRange(){
   $color = array(
-    "#ff0004",  // RED
-    "#ff2400",
-    "#ff4e00",
-    "#ff7800",
-    "#ffcc00",  // YELLOW
-    "#deff00",
-    "#b4ff00",
-    "#8aff00",
-    "#60ff00",
+    "#ff0003",  // RED
+    "#ff3500",
+    "#ff6f00",
+    "#ffa800",
+    "#ffe200",  // YELLOW
+    "#e2ff00",
+    "#a8ff00",
+    "#6fff00",
     "#36ff00"   // GREEN
     );
   return $color;
